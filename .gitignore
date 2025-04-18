@@ -1,0 +1,113 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.env/
+
+# macOS system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Debug files and directories
+debug/
+debug_*.png
+
+# Dynamic settings
+local_config.yaml
+
+# Snapshots
+snapshots/
+
+# Models and cache
+models/
+cache/
+
+# IDE settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Pytorch specific
+*.pt
+*.pth
+*.bin
+*.model
+*.onnx
+*.safetensors
+
+# Tensorflow specific
+*.pb
+*.h5
+*.hdf5
+*.ckpt*
+
+# HuggingFace cache
+.cache/
+cache/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# Environment configurations
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Data files
+*.csv
+*.json
+*.db
+*.sqlite
+
+# Customizations and specific to ClockRoss
+*.bak

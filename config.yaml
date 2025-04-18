@@ -1,0 +1,68 @@
+# StockVision Configuration
+
+display:
+  windowed_width: 1024
+  windowed_height: 600
+  fps: 30
+render:
+  width: 640
+  height: 360
+  background_color: [25, 25, 25]
+  generation:
+    num_inference_steps: 30
+    guidance_scale: 7.5
+    controlnet_conditioning_scale: 0.7
+    control_guidance_start: 0.15
+    control_guidance_end: 0.9
+stock:
+  symbol: "NVDA"
+  update_interval_minutes: 30
+  chart_range: "1mo"  # Options: 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, ytd, max
+  chart_type: "line"  # Options: line, candle
+  chart_colors:
+    up: [0, 255, 0]     # Green for price increases
+    down: [255, 0, 0]   # Red for price decreases
+    neutral: [255, 255, 255]  # White for neutral/no change
+    background: [40, 40, 40]  # Dark background
+    grid: [100, 100, 100]     # Grid lines
+    text: [255, 255, 255]     # Text color
+  overlay_opacity: 200  # 0-255
+system:
+  shutdown_cmd: sudo /sbin/shutdown -h now
+  restart_cmd: sudo /sbin/shutdown -r now
+animation:
+  transition_duration: 3.0
+  morph_flow_params:
+    pyr_scale: 0.5
+    levels: 3
+    winsize: 15
+    iterations: 3
+    poly_n: 5
+    poly_sigma: 1.2
+    flags: 256
+prompts:
+  styles:
+    studio_ghibli:
+      base: "Studio Ghibli style animation, Miyazaki inspired art"
+      artists: ["Hayao Miyazaki", "Studio Ghibli"]
+      descriptors: [
+        "whimsical", "detailed watercolor painting", "colorful pastoral scenery", 
+        "dreamy atmosphere", "vibrant nature", "warm lighting", "fantastical elements",
+        "soft clouds", "magical realism", "pastel colors", "beautiful landscaping",
+        "traditional animation", "painterly style", "cel animation", "lush vegetation"
+      ]
+      movies: [
+        "inspired by Spirited Away", "inspired by My Neighbor Totoro", 
+        "inspired by Princess Mononoke", "inspired by Howl's Moving Castle",
+        "inspired by Kiki's Delivery Service", "inspired by Castle in the Sky"
+      ]
+      themes: [
+        "nature and technology coexisting", "financial market as a living entity",
+        "the spirit of economy", "technological progress", "modern progress", 
+        "a journey through the market", "flowing rivers of data", "forest of numbers",
+        "valley of investment", "mountains of achievement"
+      ]
+  negative_prompt: >
+    text, watermark, signature, blurry, low quality, deformed, ugly, 
+    poor anatomy, bad proportions, extra limbs, disfigured, poorly drawn face, 
+    bad art, amateur, distorted, grainy, noisy, oversaturated, lowres
