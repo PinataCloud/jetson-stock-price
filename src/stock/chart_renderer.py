@@ -26,12 +26,14 @@ class ChartRenderer:
         # Create a surface for rendering
         self.surface = pygame.Surface((width, height))
     
-    def render_chart(self, stock_data):
-        """Render the stock chart as a Pygame surface to use for ControlNet input"""
+    def render_chart_array(self, stock_data):
+        """Render the stock chart and return as numpy array
+        
+        This version doesn't use pygame directly to avoid threading issues
+        """
         if not stock_data or 'historical_data' not in stock_data:
-            # Return blank surface if no data
-            self.surface.fill(self.chart_colors['background'])
-            return self.surface
+            # Return blank array if no data
+            return np.ones((self.height, self.width, 3), dtype=np.uint8) * np.array(self.chart_colors['background'], dtype=np.uint8)
         
         # Get the historical data
         hist_data = stock_data['historical_data']
@@ -117,26 +119,43 @@ class ChartRenderer:
         plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0.1, 
                    facecolor=self._rgb_to_hex(self.chart_colors['background']))
         buf.seek(0)
-        plt.close()
         
-        # Create a Pygame surface from the buffer
-        chart_img = pygame.image.load(buf)
+        # Convert buffer to numpy array directly
+        from PIL import Image
+        chart_image = Image.open(buf)
+        chart_array = np.array(chart_image)
+        
+        plt.close()
         buf.close()
         
-        # Scale to target size if needed
-        if chart_img.get_width() != self.width or chart_img.get_height() != self.height:
-            chart_img = pygame.transform.smoothscale(chart_img, (self.width, self.height))
-        
-        # Create a new surface for the final output
-        self.surface = pygame.Surface((self.width, self.height))
-        self.surface.fill(self.chart_colors['background'])
-        self.surface.blit(chart_img, (0, 0))
+        # Resize array to match target dimensions if needed
+        if chart_array.shape[0] != self.height or chart_array.shape[1] != self.width:
+            from PIL import Image
+            img = Image.fromarray(chart_array)
+            img = img.resize((self.width, self.height), Image.LANCZOS)
+            chart_array = np.array(img)
         
         if self.debug:
             # Save debug image
-            save_debug_image(self.surface, "chart")
-            
-        return self.surface
+            Image.fromarray(chart_array).save(f"debug/chart_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
+        
+        return chart_array
+    
+    def render_chart(self, stock_data):
+        """Render the stock chart as a Pygame surface
+        
+        This should only be called from the main thread
+        """
+        # Get the array and convert to pygame surface
+        array = self.render_chart_array(stock_data)
+        
+        # Convert to pygame surface - MUST be done on main thread
+        surface = pygame.surfarray.make_surface(array.swapaxes(0, 1))
+        
+        # Store the surface
+        self.surface = surface
+        
+        return surface
     
     def _plot_line_chart(self, ax, hist_data):
         """Plot a line chart of closing prices"""

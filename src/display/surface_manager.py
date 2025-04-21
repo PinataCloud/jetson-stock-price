@@ -31,19 +31,41 @@ class SurfaceManager:
         
         # Metadata
         self.last_render_request = None
+        
+        # Queue for background updates from other threads
+        self.pending_background = None
+    
+    def queue_background_update(self, image_data):
+        """Queue a background update from another thread
+        
+        Args:
+            image_data: PIL Image
+        """
+        # Just store the PIL image - we'll convert to pygame surface on the main thread
+        self.pending_background = image_data
+        if self.debug:
+            print("Background update queued")
+    
+    def apply_pending_updates(self):
+        """Apply any pending updates (should be called from main thread)"""
+        if self.pending_background:
+            self.update_background(self.pending_background)
+            self.pending_background = None
+            if self.debug:
+                print("Pending background update applied")
     
     def update_background(self, image_data):
         """Update the background surface with new image data
         
         Args:
-            image_data: PIL Image from Stable Diffusion
+            image_data: PIL Image
         """
         # Save previous background for transitions
         if self.background_surface:
             self.previous_background = self.background_surface
             self.transition_progress = 0.0
         
-        # Convert PIL Image to pygame surface
+        # Convert PIL Image to pygame surface - MUST be done on main thread
         array = np.array(image_data)
         self.background_surface = pygame.surfarray.make_surface(array.swapaxes(0, 1))
         
